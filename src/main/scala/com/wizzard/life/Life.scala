@@ -1,9 +1,6 @@
 package com.wizzard.life
 
-import scala.collection.GenTraversableOnce
-import scala.collection.generic.{CanBuildFrom, FilterMonadic}
-
-class Life(field: Map[Coordinates, Cell]) extends FilterMonadic[(Coordinates, Cell), Map[Coordinates, Cell]] {
+class Life(field: Map[Coordinates, Cell]) {
 
   def isAlive(coord: Coordinates): Boolean = {
     if (field.contains(coord)) {
@@ -34,28 +31,27 @@ class Life(field: Map[Coordinates, Cell]) extends FilterMonadic[(Coordinates, Ce
     neighbours.foldLeft(0)((sum, coord) => sum + cellAsInt(coord))
   }
 
-  def cellByNeighbours(neighbours: Set[Coordinates]): Coordinates = {
-    val sum = neighbours.foldLeft((0, 0))((sum, coord) => (sum._1 + coord.getX, sum._2 + coord.getY))
-    if (sum._1 % 8 != 0 || sum._2 % 8 != 0) {
-      throw new IllegalArgumentException
+  def nextGeneration(epochNum: Integer = 1): Life = {
+    if (epochNum < 1) {
+      throw new IllegalArgumentException("Incorrect epoch number")
     }
-    new Coordinates(sum._1 / 7, sum._2 / 7)
-  }
 
-  override def map[B, That](f: ((Coordinates, Cell)) => B)(implicit bf: CanBuildFrom[Map[Coordinates, Cell], B, That]): That = {
-    field.map(f)
-  }
+    def liveNeighbours(coords: Set[Coordinates]): Set[(Coordinates, Cell)] = {
+      def found = coords.filter(willSurvive).map((_, new Cell(true)))
+      found
+    }
 
-  override def flatMap[B, That](f: ((Coordinates, Cell)) => GenTraversableOnce[B])(implicit bf: CanBuildFrom[Map[Coordinates, Cell], B, That]): That = {
-    field.flatMap(f)
-  }
+    val nextGenField = for {
+      aliveCell <- field
+      neighbours = aliveCell._1.neighbours
+      alive <- liveNeighbours(neighbours + aliveCell._1)
+    } yield alive
 
-  override def foreach[U](f: ((Coordinates, Cell)) => U): Unit = {
-    field.foreach(f)
-  }
-
-  override def withFilter(p: ((Coordinates, Cell)) => Boolean): FilterMonadic[(Coordinates, Cell), Map[Coordinates, Cell]] = {
-    field.withFilter(p)
+    if (epochNum > 1) {
+      new Life(nextGenField).nextGeneration(epochNum - 1)
+    } else {
+      new Life(nextGenField)
+    }
   }
 
   def mkString : String = {
