@@ -6,8 +6,6 @@ class Coordinates(x: Int, y: Int) {
   def getX = x
   def getY = y
 
-  val z = 0
-
   def up = new Coordinates(x, y + 1)
   def down = new Coordinates(x, y - 1)
   def left = new Coordinates(x - 1, y)

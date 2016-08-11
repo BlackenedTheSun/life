@@ -1,51 +1,21 @@
 package com.wizzard.life
 
-class Life(field: Map[Coordinates, Cell]) {
-
-  def isAlive(coord: Coordinates): Boolean = {
-    if (field.contains(coord)) {
-      field(coord).isAlive
-    } else {
-      false
-    }
-  }
-
-  def willSurvive(coord: Coordinates): Boolean = {
-    val sum: Integer = neighboursSum(coord.neighbours)
-    if (isAlive(coord)) {
-      sum > 1 && sum < 4
-    } else {
-      sum == 3
-    }
-  }
-
-  def neighboursSum(neighbours: Set[Coordinates]): Integer = {
-    def cellAsInt(coord: Coordinates): Integer = {
-      if (isAlive(coord)) {
-        1
-      } else {
-        0
-      }
-    }
-
-    neighbours.foldLeft(0)((sum, coord) => sum + cellAsInt(coord))
-  }
+class Life(field: Set[Cell]) {
 
   def nextGeneration(epochNum: Integer = 1): Life = {
     if (epochNum < 1) {
       throw new IllegalArgumentException("Incorrect epoch number")
     }
 
-    def liveNeighbours(coords: Set[Coordinates]): Set[(Coordinates, Cell)] = {
-      def found = coords.filter(willSurvive).map((_, new Cell(true)))
-      found
+    def filterAliveNextGen(cells: Set[Cell]): Set[Cell] = {
+      cells.filter(willSurvive).map(_.revived)
     }
 
     val nextGenField = for {
       aliveCell <- field
-      neighbours = aliveCell._1.neighbours
-      alive <- liveNeighbours(neighbours + aliveCell._1)
-    } yield alive
+      neighbourCells = neighbours(aliveCell)
+      nextGenCell <- filterAliveNextGen(neighbourCells + aliveCell)
+    } yield nextGenCell
 
     if (epochNum > 1) {
       new Life(nextGenField).nextGeneration(epochNum - 1)
@@ -54,7 +24,40 @@ class Life(field: Map[Coordinates, Cell]) {
     }
   }
 
+  def isAlive(cell: Cell): Boolean = {
+    field.contains(cell)
+  }
+
+  def isAlive(coord: Coordinates): Boolean = {
+    isAlive(new Cell(coord, true))
+  }
+
+  def willSurvive(cell: Cell): Boolean = {
+    val sum: Integer = neighboursSum(cell)
+    if (isAlive(cell)) {
+      sum > 1 && sum < 4
+    } else {
+      sum == 3
+    }
+  }
+
+  def neighboursSum(cell: Cell): Integer = {
+    def cellAsInt(cell: Cell): Integer = {
+      if (isAlive(cell)) {
+        1
+      } else {
+        0
+      }
+    }
+
+    neighbours(cell).foldLeft(0)((sum, neighbour) => sum + cellAsInt(neighbour))
+  }
+
+  def neighbours(cell: Cell): Set[Cell] = {
+    cell.getCoord.neighbours.map(coord => new Cell(coord, isAlive(coord)))
+  }
+
   def mkString : String = {
-    field.foldLeft("")((str, entry) => str + entry._1.mkString + "\n")
+    field.foldLeft("")((str, cell) => str + cell.getCoord.mkString + "\n")
   }
 }
