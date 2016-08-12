@@ -2,27 +2,7 @@ package com.wizzard.life
 
 class Life(field: Set[Cell]) {
 
-  def nextGeneration(epochNum: Integer = 1): Life = {
-    if (epochNum < 1) {
-      throw new IllegalArgumentException("Incorrect epoch number")
-    }
-
-    def filterAliveNextGen(cells: Set[Cell]): Set[Cell] = {
-      cells.filter(willSurvive).map(_.revived)
-    }
-
-    val nextGenField = for {
-      aliveCell <- field
-      neighbourCells = neighbours(aliveCell)
-      nextGenCell <- filterAliveNextGen(neighbourCells + aliveCell)
-    } yield nextGenCell
-
-    if (epochNum > 1) {
-      new Life(nextGenField).nextGeneration(epochNum - 1)
-    } else {
-      new Life(nextGenField)
-    }
-  }
+  def getField = field
 
   def isAlive(cell: Cell): Boolean = {
     field.contains(cell)
@@ -59,5 +39,32 @@ class Life(field: Set[Cell]) {
 
   def mkString : String = {
     field.foldLeft("")((str, cell) => str + cell.getCoord.mkString + "\n")
+  }
+}
+
+object Life {
+  def Life(field: Set[Cell]) = new Life(field)
+
+  def nextGeneration(currGen: Life, epochNum: Integer = 1): Life = {
+    if (epochNum < 1) {
+      throw new IllegalArgumentException("Incorrect epoch number")
+    }
+
+    def filterAliveNextGen(cells: Set[Cell]): Set[Cell] = {
+      cells.filter(currGen.willSurvive).map(_.revived)
+    }
+
+    val nextGenField = for {
+      aliveCell <- currGen.getField
+      neighbourCells = currGen.neighbours(aliveCell)
+      nextGenCell <- filterAliveNextGen(neighbourCells + aliveCell)
+    } yield nextGenCell
+
+    def nextGenLife = Life(nextGenField)
+    if (epochNum > 1) {
+      nextGeneration(nextGenLife, epochNum - 1)
+    } else {
+      nextGenLife
+    }
   }
 }
