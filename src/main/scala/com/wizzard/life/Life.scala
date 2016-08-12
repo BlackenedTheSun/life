@@ -1,8 +1,8 @@
 package com.wizzard.life
 
-class Life(field: Set[Cell]) {
+class Life(_field: Set[Cell]) {
 
-  def getField = field
+  def field = _field
 
   def isAlive(cell: Cell): Boolean = {
     field.contains(cell)
@@ -34,11 +34,11 @@ class Life(field: Set[Cell]) {
   }
 
   def neighbours(cell: Cell): Set[Cell] = {
-    cell.getCoord.neighbours.map(coord => new Cell(coord, isAlive(coord)))
+    cell.coord.neighbours.map(coord => new Cell(coord, isAlive(coord)))
   }
 
   def mkString : String = {
-    field.foldLeft("")((str, cell) => str + cell.getCoord.mkString + "\n")
+    field.foldLeft("")((str, cell) => str + cell.coord.mkString + "\n")
   }
 }
 
@@ -55,7 +55,7 @@ object Life {
     }
 
     val nextGenField = for {
-      aliveCell <- currGen.getField
+      aliveCell <- currGen.field
       neighbourCells = currGen.neighbours(aliveCell)
       nextGenCell <- filterAliveNextGen(neighbourCells + aliveCell)
     } yield nextGenCell

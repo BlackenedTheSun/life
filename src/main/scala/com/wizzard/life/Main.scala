@@ -9,6 +9,6 @@ object Main {
     val newLife = new Life(coords)
     println(newLife.mkString)
     println("".padTo(30, '-'))
-    println(Life.nextGeneration(newLife, 100000).mkString)
+    println(Life.nextGeneration(newLife, 10000).mkString)
   }
 }

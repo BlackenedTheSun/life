@@ -1,10 +1,10 @@
 package com.wizzard.life
 
-class Coordinates(x: Int, y: Int) {
+class Coordinates(_x: Int, _y: Int) {
   lazy val neighbours = Set(up, down, left, right, upLeft, upRight, downLeft, downRight)
 
-  def getX = x
-  def getY = y
+  def x = _x
+  def y = _y
 
   def up = new Coordinates(x, y + 1)
   def down = new Coordinates(x, y - 1)
@@ -32,8 +32,8 @@ class Coordinates(x: Int, y: Int) {
   override def equals(other: Any): Boolean = other match {
     case that: Coordinates =>
       (that canEqual this) &&
-        x == that.getX &&
-        y == that.getY
+        x == that.x &&
+        y == that.y
     case _ => false
   }
 
