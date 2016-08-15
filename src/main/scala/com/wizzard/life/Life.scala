@@ -43,7 +43,11 @@ class Life(_field: Set[Cell]) {
 }
 
 object Life {
-  def Life(field: Set[Cell]) = new Life(field)
+
+  def apply(field: Set[(Int, Int)]) = {
+    def cells = field.map(elem => new Cell(new Coordinates(elem._1, elem._2), true))
+    new Life(cells)
+  }
 
   def nextGeneration(currGen: Life, epochNum: Integer = 1): Life = {
     if (epochNum < 1) {
@@ -60,7 +64,7 @@ object Life {
       nextGenCell <- filterAliveNextGen(neighbourCells + aliveCell)
     } yield nextGenCell
 
-    def nextGenLife = Life(nextGenField)
+    def nextGenLife = new Life(nextGenField)
     if (epochNum > 1) {
       nextGeneration(nextGenLife, epochNum - 1)
     } else {
