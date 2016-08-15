@@ -41,3 +41,7 @@ class Coordinates(_x: Int, _y: Int) extends Comparable[Coordinates]{
     Ordering.Int.compare(this.x + this.y, other.x + other.y)
   }
 }
+
+object Coordinates {
+  def apply(x: Integer, y: Integer) = new Coordinates(x, y)
+}
