@@ -40,6 +40,10 @@ class Life(_field: Set[Cell]) {
   def mkString : String = {
     field.foldLeft("")((str, cell) => str + cell.coord.mkString + "\n")
   }
+
+  override def toString : String = {
+    mkString
+  }
 }
 
 object Life {
