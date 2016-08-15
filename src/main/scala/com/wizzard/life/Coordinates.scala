@@ -1,6 +1,6 @@
 package com.wizzard.life
 
-class Coordinates(_x: Int, _y: Int) {
+class Coordinates(_x: Int, _y: Int) extends Comparable[Coordinates]{
   lazy val neighbours = Set(up, down, left, right, upLeft, upRight, downLeft, downRight)
 
   def x = _x
@@ -37,4 +37,11 @@ class Coordinates(_x: Int, _y: Int) {
     case _ => false
   }
 
+  override def compareTo(other: Coordinates): Int = {
+    Ordering.Int.compare(this.x + this.y, other.x + other.y)
+  }
+}
+
+object Coordinates {
+  def apply(x: Integer, y: Integer) = new Coordinates(x, y)
 }
