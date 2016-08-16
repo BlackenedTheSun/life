@@ -1,9 +1,17 @@
 name := "Life"
 
-version := "1.0"
+val commonSettings = Seq(
+  scalaVersion := "2.11.8",
+  version := "1.0"
+)
 
-scalaVersion := "2.11.8"
+lazy val core = (project in file("life-core"))
+  .settings(commonSettings: _*)
 
-libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.0"
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.0" % "test"
-libraryDependencies += "org.scalacheck" %% "scalacheck" % "1.13.2" % "test"
+lazy val ui = (project in file("life-ui"))
+  .settings(commonSettings: _*)
+  .dependsOn(core)
+
+lazy val root = (project in file("."))
+  .settings(commonSettings: _*)
+  .aggregate(core, ui)
