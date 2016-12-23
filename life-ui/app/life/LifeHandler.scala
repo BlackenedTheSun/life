@@ -4,6 +4,7 @@ import com.wizzard.life.{Cell, Coordinates, Life}
 import life.dto.{CellDto, LifeDto}
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class LifeHandler {
   def handlePost(request: LifeDto): Future[LifeDto] = {
