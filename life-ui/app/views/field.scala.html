@@ -1,0 +1,26 @@
+@(data: life.dto.LifeDto)
+
+<canvas height="600" width="800" id="field">
+    Game field
+</canvas>
+<script>
+    var field = document.getElementById("field");
+    var ctx = field.getContext('2d');
+    var leftX = 0, rightX = 20, downY = 0, upY = 20;
+    var cellWidth = field.width / Math.abs(rightX - leftX);
+    var cellLength = field.height / Math.abs(upY - downY);
+
+    // Draw vertical lines
+    for (i = 0; i < Math.abs(rightX - leftX), i++) {
+        ctx.moveTo(i * cellWidth, 0);
+        ctx.lineTo(i * cellWidth, field.height);
+        ctx.stroke();
+    }
+
+    // Draw horizontal lines
+    for (i = 0, i < Math.abs(upY - downY), i++) {
+        ctx.moveTo(0, i * cellLength);
+        ctx.lineTo(field.width, i * cellWidth);
+        ctx.stroke();
+    }
+</script>

@@ -24,3 +24,9 @@ class Cell(_coord: Coordinates, _alive: Boolean = false) {
     coord.hashCode()
   }
 }
+
+object Cell {
+  def apply(coord: Coordinates, alive: Boolean = false): Cell = {
+    new Cell(coord, alive)
+  }
+}
