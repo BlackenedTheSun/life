@@ -1,4 +1,5 @@
 name := "Life"
+javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
 
 lazy val core = (project in file("life-core")).
   enablePlugins(Common)
